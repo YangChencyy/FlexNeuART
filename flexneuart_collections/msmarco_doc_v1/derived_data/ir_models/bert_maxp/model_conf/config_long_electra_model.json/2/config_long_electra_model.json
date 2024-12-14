@@ -1,0 +1,7 @@
+{
+  "max_query_len": 32,
+  "max_doc_len": 1431,
+
+  "model.dropout": 0.1,
+  "model.bert_flavor": "cross-encoder/ms-marco-electra-base"
+}

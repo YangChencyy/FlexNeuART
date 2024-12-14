@@ -1,0 +1,113 @@
+Failed to load the NDRM models (which require additional libraries): No module named 'fasttext'
+Reading model configuration from /Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/ir_models/bert_maxp/model_conf/config_long_electra_model.json/2//config_long_electra_model.json
+Using model config max_query_len: 32
+Using model config max_doc_len: 1431
+Using model config model.dropout: 0.1
+Using model config model.bert_flavor: cross-encoder/ms-marco-electra-base
+Reading training configuration from /Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/ir_models/bert_maxp/model_conf/config_long_electra_model.json/2//config_long_electra_training.json
+Using training config amp: True
+Using training config epoch_lr_decay: 0.95
+Using training config lr_schedule: const_with_warmup
+Using training config warmup_pct: 0.2
+Using training config init_lr: 0.0001
+Using training config init_bert_lr: 1e-05
+Using training config loss_func: pairwise_margin
+Using training config weight_decay: 1e-07
+Using training config backprop_batch_size: 1
+Using training config batch_size: 16
+Using training config batch_size_val: 16
+Using training config max_query_val: 5000
+Namespace(amp=True, init_model_weights=None, model_name='bert_maxp', init_model=None, device_name='cpu', max_query_len=32, max_doc_len=1431, datafiles=['/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/cedr_100_100_0_5_0_s0_train/text_raw/data_query.tsv', '/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/cedr_100_100_0_5_0_s0_train/text_raw/data_docs.tsv'], qrels='/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/cedr_100_100_0_5_0_s0_train/text_raw/qrels.txt', train_pairs='/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/cedr_100_100_0_5_0_s0_train/text_raw/train_pairs.tsv', valid_run='/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/cedr_100_100_0_5_0_s0_train/text_raw/test_run.txt', model_out_dir='/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/ir_models/bert_maxp/model_conf/config_long_electra_model.json/2/', epoch_qty=1, epoch_repeat_qty=1, valid_type='always', warmup_pct=0.2, lr_schedule='const_with_warmup', device_qty=1, batch_sync_qty=4, master_port=10001, print_grads=False, save_epoch_snapshots=False, seed=2, optim='adamw', loss_margin=1.0, neg_qty_per_query=2, init_lr=0.0001, momentum=0.9, cand_score_weight=0.0, init_bert_lr=1e-05, init_bart_lr=None, init_aggreg_lr=None, init_interact_lr=None, epoch_lr_decay=0.95, weight_decay=1e-07, batch_size=16, batch_size_val=16, backprop_batch_size=1, batches_per_train_epoch=None, max_query_val=5000, no_shuffle_train=False, use_external_eval=False, eval_metric='mrr', distr_backend='gloo', loss_func='pairwise_margin', wandb_api_key=None, wandb_project=None, wandb_team_name=None, wandb_run_name=None, wandb_group_name=None, json_model_conf='/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/ir_models/bert_maxp/model_conf/config_long_electra_model.json/2//config_long_electra_model.json', json_train_conf='/Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/ir_models/bert_maxp/model_conf/config_long_electra_model.json/2//config_long_electra_training.json', **{'model.dropout': 0.1, 'model.bert_flavor': 'cross-encoder/ms-marco-electra-base'})
+Setting the seed to 2
+Loss: <flexneuart.models.train.loss.PairwiseMarginRankingLossWrapper object at 0x103d78b50>
+Model type name: bert_maxp, registered class: <class 'flexneuart.models.bert_aggreg_p.BertMaxPRanker'>
+Creating the model from scratch!
+Model type: cross-encoder/ms-marco-electra-base # of channels: 13 hidden layer size: 768 input window size: 512 no token type IDs: False
+Dropout Dropout(p=0.1, inplace=False)
+BertMaxPRanker(
+  (bert): ElectraModel(
+    (embeddings): ElectraEmbeddings(
+      (word_embeddings): Embedding(30522, 768, padding_idx=0)
+      (position_embeddings): Embedding(512, 768)
+      (token_type_embeddings): Embedding(2, 768)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (encoder): ElectraEncoder(
+      (layer): ModuleList(
+        (0-11): 12 x ElectraLayer(
+          (attention): ElectraAttention(
+            (self): ElectraSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): ElectraSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): ElectraIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+            (intermediate_act_fn): GELUActivation()
+          )
+          (output): ElectraOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+    )
+  )
+  (dropout): Dropout(p=0.1, inplace=False)
+  (cls): Linear(in_features=768, out_features=1, bias=True)
+)
+loading datafile (by line): 0it [00:00, ?it/s]                                              skipping line 14044 because it has wrong # of fields: "2"
+loading datafile (by line): 0it [00:00, ?it/s]                                              loading datafile (by line): 0it [00:00, ?it/s]loading datafile (by line): 4960it [00:00, 49589.52it/s]loading datafile (by line): 10177it [00:00, 51103.84it/s]loading datafile (by line): 15371it [00:00, 51482.55it/s]loading datafile (by line): 20746it [00:00, 52375.59it/s]loading datafile (by line): 25984it [00:00, 51738.57it/s]loading datafile (by line): 31363it [00:00, 52422.60it/s]loading datafile (by line): 36685it [00:00, 52679.28it/s]loading datafile (by line): 41964it [00:00, 52712.69it/s]loading datafile (by line): 47237it [00:00, 52182.15it/s]loading datafile (by line): 52457it [00:01, 51817.11it/s]loading datafile (by line): 57641it [00:01, 47290.09it/s]loading datafile (by line): 62443it [00:01, 47434.59it/s]loading datafile (by line): 67239it [00:01, 47257.26it/s]loading datafile (by line): 72001it [00:01, 45353.41it/s]loading datafile (by line): 76792it [00:01, 46075.59it/s]loading datafile (by line): 81590it [00:01, 46544.45it/s]                                                         loading qrels (by line): 0it [00:00, ?it/s]loading qrels (by line): 36164it [00:00, 278191.00it/s]loading qrels (by line): 107373it [00:00, 505360.31it/s]loading qrels (by line): 160715it [00:00, 436345.34it/s]loading qrels (by line): 231084it [00:00, 527285.80it/s]loading qrels (by line): 286687it [00:00, 454303.86it/s]loading qrels (by line): 359412it [00:00, 531655.07it/s]                                                        loading pairs (by line): 0it [00:00, ?it/s]                                           loading run (by line): 0it [00:00, ?it/s]                                         # of eval. queries: 0  in the file /Users/yangchen/Desktop/2024_Fall/capstone/flexneuart_collections/msmarco_doc_v1/derived_data/cedr_100_100_0_5_0_s0_train/text_raw/test_run.txt
+Training parameters:
+TrainParams(optim='adamw', device_name='cpu', init_lr=0.0001, init_bert_lr=1e-05, init_aggreg_lr=None, init_bart_lr=None, init_interact_lr=None, epoch_lr_decay=0.95, weight_decay=1e-07, momentum=0.9, amp=True, warmup_pct=0.2, lr_schedule='const_with_warmup', batch_sync_qty=4, batches_per_train_epoch=None, batch_size=16, batch_size_val=16, max_query_len=32, max_doc_len=1431, cand_score_weight=0.0, neg_qty_per_query=2, backprop_batch_size=1, epoch_qty=1, epoch_repeat_qty=1, save_epoch_snapshots=False, print_grads=False, shuffle_train=True, valid_type='always', use_external_eval=False, eval_metric='mrr')
+BERT parameters:
+{'bert.encoder.layer.0.intermediate.dense.weight', 'bert.encoder.layer.2.attention.self.value.bias', 'bert.encoder.layer.11.attention.output.dense.bias', 'bert.encoder.layer.3.output.LayerNorm.bias', 'bert.encoder.layer.11.output.dense.weight', 'bert.encoder.layer.1.output.dense.weight', 'bert.encoder.layer.2.attention.self.key.bias', 'bert.encoder.layer.1.intermediate.dense.bias', 'bert.encoder.layer.8.attention.self.value.weight', 'bert.encoder.layer.4.attention.output.dense.weight', 'bert.encoder.layer.10.attention.output.dense.bias', 'bert.encoder.layer.7.attention.output.dense.weight', 'bert.encoder.layer.6.attention.self.value.weight', 'bert.encoder.layer.0.attention.self.value.bias', 'bert.encoder.layer.5.output.LayerNorm.weight', 'bert.encoder.layer.10.output.LayerNorm.weight', 'bert.encoder.layer.0.attention.self.value.weight', 'bert.encoder.layer.10.attention.output.dense.weight', 'bert.encoder.layer.4.attention.self.query.weight', 'bert.encoder.layer.5.output.dense.bias', 'bert.encoder.layer.1.attention.self.query.weight', 'bert.encoder.layer.2.output.LayerNorm.bias', 'bert.encoder.layer.4.attention.output.LayerNorm.bias', 'bert.encoder.layer.11.intermediate.dense.bias', 'bert.encoder.layer.4.intermediate.dense.bias', 'bert.encoder.layer.6.output.LayerNorm.bias', 'bert.encoder.layer.9.attention.self.key.weight', 'bert.encoder.layer.10.attention.self.value.weight', 'bert.encoder.layer.4.attention.self.key.weight', 'bert.encoder.layer.11.attention.self.value.weight', 'bert.encoder.layer.3.intermediate.dense.bias', 'bert.encoder.layer.9.output.dense.bias', 'bert.encoder.layer.1.attention.self.query.bias', 'bert.encoder.layer.10.attention.self.key.bias', 'bert.encoder.layer.10.attention.self.query.weight', 'bert.encoder.layer.5.attention.output.LayerNorm.bias', 'bert.encoder.layer.1.attention.self.key.bias', 'bert.encoder.layer.1.attention.output.dense.weight', 'bert.encoder.layer.11.attention.self.query.weight', 'bert.encoder.layer.6.attention.self.value.bias', 'bert.encoder.layer.8.intermediate.dense.weight', 'bert.encoder.layer.0.attention.output.dense.weight', 'bert.encoder.layer.3.attention.self.query.weight', 'bert.encoder.layer.9.attention.self.value.weight', 'bert.embeddings.word_embeddings.weight', 'bert.encoder.layer.8.attention.output.LayerNorm.weight', 'bert.encoder.layer.4.output.LayerNorm.bias', 'bert.encoder.layer.4.attention.output.LayerNorm.weight', 'bert.encoder.layer.3.attention.output.dense.weight', 'bert.encoder.layer.2.attention.output.LayerNorm.bias', 'bert.encoder.layer.5.attention.self.key.bias', 'bert.encoder.layer.1.attention.self.key.weight', 'bert.encoder.layer.7.intermediate.dense.bias', 'bert.encoder.layer.5.attention.output.LayerNorm.weight', 'bert.encoder.layer.8.attention.output.LayerNorm.bias', 'bert.encoder.layer.9.output.LayerNorm.weight', 'bert.encoder.layer.8.attention.self.query.bias', 'bert.encoder.layer.5.output.LayerNorm.bias', 'bert.encoder.layer.11.attention.self.key.bias', 'bert.encoder.layer.7.attention.self.value.bias', 'bert.encoder.layer.10.attention.self.query.bias', 'bert.encoder.layer.11.intermediate.dense.weight', 'bert.encoder.layer.1.attention.output.dense.bias', 'bert.encoder.layer.11.output.dense.bias', 'bert.encoder.layer.8.output.dense.weight', 'bert.encoder.layer.10.attention.self.value.bias', 'bert.encoder.layer.3.attention.output.LayerNorm.weight', 'bert.encoder.layer.7.output.LayerNorm.bias', 'bert.encoder.layer.0.output.LayerNorm.bias', 'bert.encoder.layer.0.attention.output.LayerNorm.weight', 'bert.encoder.layer.3.output.LayerNorm.weight', 'bert.encoder.layer.5.attention.self.value.weight', 'bert.encoder.layer.5.intermediate.dense.bias', 'bert.encoder.layer.0.attention.output.dense.bias', 'bert.encoder.layer.0.attention.self.key.weight', 'bert.encoder.layer.10.output.LayerNorm.bias', 'bert.encoder.layer.1.attention.self.value.bias', 'bert.encoder.layer.1.output.LayerNorm.weight', 'bert.encoder.layer.5.attention.output.dense.bias', 'bert.encoder.layer.2.attention.self.value.weight', 'bert.encoder.layer.7.output.dense.bias', 'bert.encoder.layer.5.attention.output.dense.weight', 'bert.encoder.layer.4.attention.output.dense.bias', 'bert.encoder.layer.9.attention.output.dense.bias', 'bert.encoder.layer.10.intermediate.dense.bias', 'bert.encoder.layer.6.attention.output.LayerNorm.weight', 'bert.encoder.layer.1.output.dense.bias', 'bert.encoder.layer.8.attention.self.key.bias', 'bert.encoder.layer.9.intermediate.dense.bias', 'bert.encoder.layer.2.attention.self.query.weight', 'bert.encoder.layer.5.attention.self.key.weight', 'bert.embeddings.position_embeddings.weight', 'bert.encoder.layer.0.output.dense.weight', 'bert.encoder.layer.6.attention.output.LayerNorm.bias', 'bert.encoder.layer.9.attention.self.value.bias', 'bert.encoder.layer.1.attention.output.LayerNorm.weight', 'bert.encoder.layer.4.output.dense.bias', 'bert.encoder.layer.10.intermediate.dense.weight', 'bert.encoder.layer.2.attention.output.dense.bias', 'bert.encoder.layer.9.intermediate.dense.weight', 'bert.encoder.layer.10.output.dense.weight', 'bert.encoder.layer.1.attention.self.value.weight', 'bert.encoder.layer.0.output.LayerNorm.weight', 'bert.encoder.layer.3.attention.self.value.weight', 'bert.encoder.layer.3.intermediate.dense.weight', 'bert.encoder.layer.7.output.LayerNorm.weight', 'bert.encoder.layer.5.output.dense.weight', 'bert.encoder.layer.0.attention.self.query.bias', 'bert.encoder.layer.2.attention.self.query.bias', 'bert.encoder.layer.3.attention.self.key.bias', 'bert.encoder.layer.6.attention.output.dense.weight', 'bert.encoder.layer.6.attention.self.key.bias', 'bert.encoder.layer.9.output.LayerNorm.bias', 'bert.encoder.layer.2.output.dense.bias', 'bert.encoder.layer.8.intermediate.dense.bias', 'bert.encoder.layer.3.attention.self.value.bias', 'bert.encoder.layer.5.attention.self.query.weight', 'bert.encoder.layer.7.attention.self.value.weight', 'bert.encoder.layer.0.intermediate.dense.bias', 'bert.encoder.layer.8.output.LayerNorm.bias', 'bert.encoder.layer.8.output.LayerNorm.weight', 'bert.encoder.layer.2.attention.output.LayerNorm.weight', 'bert.encoder.layer.9.attention.self.query.weight', 'bert.encoder.layer.9.attention.output.dense.weight', 'bert.encoder.layer.8.attention.self.query.weight', 'bert.encoder.layer.9.attention.self.key.bias', 'bert.encoder.layer.7.intermediate.dense.weight', 'bert.encoder.layer.11.attention.output.LayerNorm.bias', 'bert.encoder.layer.10.attention.self.key.weight', 'bert.encoder.layer.11.output.LayerNorm.weight', 'bert.encoder.layer.7.attention.output.LayerNorm.bias', 'bert.encoder.layer.5.intermediate.dense.weight', 'bert.encoder.layer.9.output.dense.weight', 'bert.encoder.layer.11.attention.self.key.weight', 'bert.encoder.layer.4.attention.self.key.bias', 'bert.encoder.layer.5.attention.self.query.bias', 'bert.encoder.layer.6.attention.self.key.weight', 'bert.encoder.layer.2.intermediate.dense.bias', 'bert.encoder.layer.11.attention.output.LayerNorm.weight', 'bert.embeddings.token_type_embeddings.weight', 'bert.encoder.layer.7.attention.output.dense.bias', 'bert.encoder.layer.1.output.LayerNorm.bias', 'bert.encoder.layer.11.attention.self.value.bias', 'bert.encoder.layer.2.attention.output.dense.weight', 'bert.encoder.layer.8.attention.self.key.weight', 'bert.encoder.layer.4.attention.self.value.weight', 'bert.encoder.layer.4.attention.self.query.bias', 'bert.encoder.layer.2.output.LayerNorm.weight', 'bert.encoder.layer.7.attention.self.key.weight', 'bert.encoder.layer.7.output.dense.weight', 'bert.encoder.layer.1.attention.output.LayerNorm.bias', 'bert.encoder.layer.3.attention.output.LayerNorm.bias', 'bert.encoder.layer.3.attention.output.dense.bias', 'bert.encoder.layer.0.attention.output.LayerNorm.bias', 'bert.encoder.layer.11.attention.output.dense.weight', 'bert.encoder.layer.11.output.LayerNorm.bias', 'bert.encoder.layer.1.intermediate.dense.weight', 'bert.encoder.layer.4.output.LayerNorm.weight', 'bert.encoder.layer.7.attention.output.LayerNorm.weight', 'bert.encoder.layer.8.attention.output.dense.weight', 'bert.encoder.layer.10.output.dense.bias', 'bert.encoder.layer.6.attention.self.query.weight', 'bert.encoder.layer.6.output.LayerNorm.weight', 'bert.encoder.layer.6.output.dense.weight', 'bert.encoder.layer.4.attention.self.value.bias', 'bert.encoder.layer.9.attention.output.LayerNorm.weight', 'bert.encoder.layer.10.attention.output.LayerNorm.weight', 'bert.encoder.layer.6.attention.self.query.bias', 'bert.encoder.layer.9.attention.output.LayerNorm.bias', 'bert.embeddings.LayerNorm.bias', 'bert.encoder.layer.2.attention.self.key.weight', 'bert.encoder.layer.3.attention.self.query.bias', 'bert.encoder.layer.3.output.dense.weight', 'bert.encoder.layer.8.output.dense.bias', 'bert.encoder.layer.10.attention.output.LayerNorm.bias', 'bert.encoder.layer.6.intermediate.dense.bias', 'bert.encoder.layer.6.output.dense.bias', 'bert.encoder.layer.11.attention.self.query.bias', 'bert.encoder.layer.0.output.dense.bias', 'bert.encoder.layer.4.output.dense.weight', 'bert.encoder.layer.0.attention.self.query.weight', 'bert.encoder.layer.2.output.dense.weight', 'bert.encoder.layer.5.attention.self.value.bias', 'bert.encoder.layer.6.intermediate.dense.weight', 'bert.encoder.layer.7.attention.self.query.bias', 'bert.embeddings.LayerNorm.weight', 'bert.encoder.layer.0.attention.self.key.bias', 'bert.encoder.layer.2.intermediate.dense.weight', 'bert.encoder.layer.7.attention.self.key.bias', 'bert.encoder.layer.8.attention.self.value.bias', 'bert.encoder.layer.6.attention.output.dense.bias', 'bert.encoder.layer.4.intermediate.dense.weight', 'bert.encoder.layer.9.attention.self.query.bias', 'bert.encoder.layer.7.attention.self.query.weight', 'bert.encoder.layer.8.attention.output.dense.bias', 'bert.encoder.layer.3.output.dense.bias', 'bert.encoder.layer.3.attention.self.key.weight'}
+Loss function:pairwise_margin
+Process rank 0 device cpu using 13958 training pairs out of 13958
+Using a const-learning rate scheduler with a warm-up for 174 steps
+Optimizer:AdamW (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    initial_lr: 0.0001
+    lr: 0.0
+    maximize: False
+    weight_decay: 1e-07
+
+Parameter Group 1
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    initial_lr: 1e-05
+    lr: 0.0
+    maximize: False
+    weight_decay: 1e-07
+)
+  0%|                                                 | 0/13958 [00:00<?, ?it/s]/Users/yangchen/opt/miniconda3/envs/flexneuart/lib/python3.9/site-packages/flexneuart/models/train/amp.py:64: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  return autocast, GradScaler()
+/Users/yangchen/opt/miniconda3/envs/flexneuart/lib/python3.9/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  warnings.warn(
+Token indices sequence length is longer than the specified maximum sequence length for this model (933 > 512). Running this sequence through the model will result in indexing errors
+/Users/yangchen/Desktop/2024_Fall/capstone/FlexNeuART/scripts/./train_nn/train_model.py:252: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with auto_cast_class():
+/Users/yangchen/opt/miniconda3/envs/flexneuart/lib/python3.9/site-packages/torch/amp/autocast_mode.py:265: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+  0%|                                      | 1/13958 [00:10<42:10:07, 10.88s/it]  0%|                                      | 1/13958 [00:10<42:10:07, 10.88s/it]LRs: 0.000000 0.000000 train loss 0.98842:   0%| | 1/13958 [00:10<42:10:07, 10.8
