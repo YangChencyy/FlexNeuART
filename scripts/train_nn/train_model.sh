@@ -1,12 +1,7 @@
 #!/bin/bash -e
 # This is a convenience wrapper that does a bit of extra heavy lifting for model training.
-# In particular, based on the collection name and few options it
-# 1. Identifies the key directories to read the training data and store the model
-# 2. Copies the JSON configuration file to the model output directory, if such as JSON file
-#    was provided
-# 3. Saves the training log
-set -eo pipefail
 
+set -eo pipefail
 
 source ./common_proc.sh
 source ./config.sh
@@ -33,9 +28,10 @@ batchesPerEpoch=0
 masterPort=10001
 deviceQty=1
 batchSyncQty=4
-deviceName="cuda:0"
+deviceName="cpu"
 addExperSubdir=""
-jsonConf=""
+modelConf=""
+trainConf=""
 initModelWeights=""
 initModel=""
 optim="adamw"
@@ -61,7 +57,8 @@ paramOpts=("seed"          "seed"             "seed (default $seed)"
       "device_qty"         "deviceQty"        "# of device (default $deviceQty)"
       "batch_sync_qty"     "batchSyncQty"     "# of batches before model sync"
       "add_exper_subdir"   "addExperSubdir"   "additional experimental sub-directory (optional)"
-      "json_conf"          "jsonConf"         "collection relative JSON configuration file (optional)"
+      "model_conf"         "modelConf"        "model JSON configuration file"
+      "train_conf"         "trainConf"        "training JSON configuration file"
       "init_model_weights" "initModelWeights" "initial model weights"
       "init_model"         "initModel"        "init model"
       "valid_type"         "valType"          "validation type: always (every epoch), last_epoch (last epoch), never"
@@ -112,106 +109,30 @@ fi
 outModelDir="$derivedDataDir/$IR_MODELS_SUBDIR/$modelName/$addExperSubdir/$seed/"
 trainDir="$derivedDataDir/$trainSubDir"
 
-
-if [ ! -d "$outModelDir" ] ; then
-  echo "Creating new output directory"
-  mkdir -p "$outModelDir"
-else
-  echo "Cleaning up the output directory: $outModelDir"
-  # A safer way to clean is to make sure that:
-  # 1. the variable is not empty and it is a directory
-  # 2. go there, then delete.
-  # 3. otherwise we risk doing rm -rf /  *
-  checkVarNonEmpty "outModelDir"
-  # -d will fail for empty name as well
-  if [ ! -d "$outModelDir" ] ; then
-    echo "$Not a directory: $outModelDir"
-    exit 1
-  else
-    pushd "$outModelDir"
-    # In the worst case we will delete files in the current directory only
-    rm -rf ./*
-    popd
-  fi
+# Copy both JSON configurations to the output directory
+if [ "$modelConf" != "" ] ; then
+  cp "$COLLECT_ROOT/$collect/$modelConf" "$outModelDir"
+  bn=`basename "$modelConf"`
+  modelConfDest="$outModelDir/$bn"
+  modelConfArg=" --json_model_conf $modelConfDest "
+  echo "Model JSON config:                            $modelConfDest"
 fi
 
-collectDir="$COLLECT_ROOT/$collect"
-
-jsonConfArg=""
-
-if [ "$saveEpochSnapshots" = "1" ] ; then
-  saveEpochSnapshotsArg=" --save_epoch_snapshots "
-fi
-
-valTypeArg=""
-if [ "$valType" != "" ] ; then
-  valTypeArg=" --valid_type $valType "
-fi
-
-validCheckPointsArg=""
-if [ "$validCheckPoints" != "" ] ; then
-  validCheckPointsArg=" --valid_checkpoints $validCheckPoints "
-fi
-
-validRunDirArg=""
-if [ "$validRunDir" != "" ] ; then
-  validRunDirArg=" --valid_run_dir $outModelDir/$validRunDir "
-fi
-
-maxQueryValArg=""
-if [ "$maxQueryVal" != "" ] ; then
-  maxQueryValArg=" --max_query_val $maxQueryVal "
-fi
-
-batchesPerEpochArg=""
-if [ "$batchesPerEpoch" != "" ] ; then
-  batchesPerEpochArg=" --batches_per_train_epoch $batchesPerEpoch "
-fi
-
-if [ "$amp" = "1" ] ; then
-  ampArg=" --amp "
+if [ "$trainConf" != "" ] ; then
+  cp "$COLLECT_ROOT/$collect/$trainConf" "$outModelDir"
+  bn=`basename "$trainConf"`
+  trainConfDest="$outModelDir/$bn"
+  trainConfArg=" --json_train_conf $trainConfDest "
+  echo "Training JSON config:                         $trainConfDest"
 fi
 
 echo "=========================================================================="
-echo "Training data directory:                        $trainDir"
-echo "Output model directory:                         $outModelDir"
-echo "# of epochs:                                    $epochQty"
-echo "# of each epoch repetition:                     $epochRepeatQty"
-echo "Save snapshots arg:                             $saveEpochSnapshotsArg"
-echo "Validation type arg:                            $valTypeArg"
-echo "seed:                                           $seed"
-echo "device #:                                       $deviceQty"
-echo "Pytorch distributed backend:                    $distrBackend"
-echo "# of batches before model sync:                 $batchSyncQty"
-echo "optimizer:                                      $optim"
-echo "validation checkpoints arg:                     $validCheckPointsArg"
-echo "validation run dir  arg:                        $validRunDirArg"
-echo "batches per train epoch arg:                    $batchesPerEpochArg"
-echo "max # of valid. queries arg:                    $maxQueryValArg"
-echo "Auto-mixed precision arg:                       $ampArg"
-
-if [ "$deviceQty" = "1" ] ; then
-  echo "device name:                                    $deviceName"
-else
-  echo "master port:                                    $masterPort"
-fi
-
-if [ "$jsonConf" != "" ] ; then
-  cp "$collectDir/$jsonConf" "$outModelDir"
-  bn=`basename "$jsonConf"`
-  jsonConfDest="$outModelDir/$bn"
-  jsonConfArg=" --json_conf $jsonConfDest "
-  echo "JSON config:                                    $jsonConfDest"
-fi
-
-echo "=========================================================================="
-
-set -o pipefail
 
 python -u ./train_nn/train_model.py \
   $initModelArgs \
   $ampArg \
-  $jsonConfArg \
+  $modelConfArg \
+  $trainConfArg \
   $validCheckPointsArg \
   $validRunDirArg \
   $maxQueryValArg \
@@ -235,4 +156,3 @@ python -u ./train_nn/train_model.py \
   --qrels "$trainDir/qrels.txt" \
   --model_out_dir "$outModelDir" \
 2>&1|tee "$outModelDir/train.log"
-

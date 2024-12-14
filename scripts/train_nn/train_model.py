@@ -832,30 +832,55 @@ def main_cli():
     parser.add_argument('--wandb_group_name', metavar='wandb_group_name', type=str, default=None,
                         help='wandb group name for logging')
 
-    parser.add_argument('--json_conf', metavar='JSON config',
+    parser.add_argument('--json_model_conf', metavar='Model JSON config',
                         type=str, default=None,
-            help='a JSON config (simple-dictionary): keys are the same as args, takes precedence over command line args')
+                        help='JSON config for model parameters: keys start with "model."')
+
+    parser.add_argument('--json_train_conf', metavar='Training JSON config',
+                        type=str, default=None,
+                        help='JSON config for training parameters: keys do not start with "model."')
+
 
     args = parser.parse_args()
 
-    all_arg_names = vars(args).keys()
+    # all_arg_names = vars(args).keys()
 
-    if args.json_conf is not None:
-        conf_file = args.json_conf
-        print(f'Reading configuration variables from {conf_file}')
-        add_conf = read_json(conf_file)
-        for arg_name, arg_val in add_conf.items():
-            arg_name : str
-            if arg_name not in all_arg_names and not arg_name.startswith(MODEL_PARAM_PREF):
-                print(f'Invalid option in the configuration file: {arg_name}')
+    # if args.json_conf is not None:
+    #     conf_file = args.json_conf
+    #     print(f'Reading configuration variables from {conf_file}')
+    #     add_conf = read_json(conf_file)
+    #     for arg_name, arg_val in add_conf.items():
+    #         arg_name : str
+    #         if arg_name not in all_arg_names and not arg_name.startswith(MODEL_PARAM_PREF):
+    #             print(f'Invalid option in the configuration file: {arg_name}')
+    #             sys.exit(1)
+    #         arg_default = getattr(args, arg_name, None)
+    #         exp_type = type(arg_default)
+    #         if arg_default is not None and type(arg_val) != exp_type:
+    #             print(f'Invalid type in the configuration file: {arg_name} expected type: '+str(type(exp_type)) + f' default {arg_default}')
+    #             sys.exit(1)
+    #         print(f'Using {arg_name} from the config')
+    #         setattr(args, arg_name, arg_val)
+
+    if args.json_model_conf is not None:
+        print(f'Reading model configuration from {args.json_model_conf}')
+        model_conf = read_json(args.json_model_conf)
+        for key, value in model_conf.items():
+            if not key.startswith('model.') and key not in vars(args):
+                print(f'Invalid model configuration option: {key}')
                 sys.exit(1)
-            arg_default = getattr(args, arg_name, None)
-            exp_type = type(arg_default)
-            if arg_default is not None and type(arg_val) != exp_type:
-                print(f'Invalid type in the configuration file: {arg_name} expected type: '+str(type(exp_type)) + f' default {arg_default}')
+            print(f'Using model config {key}: {value}')
+            setattr(args, key, value)
+
+    if args.json_train_conf is not None:
+        print(f'Reading training configuration from {args.json_train_conf}')
+        train_conf = read_json(args.json_train_conf)
+        for key, value in train_conf.items():
+            if key.startswith('model.') or key not in vars(args):
+                print(f'Invalid training configuration option: {key}')
                 sys.exit(1)
-            print(f'Using {arg_name} from the config')
-            setattr(args, arg_name, arg_val)
+            print(f'Using training config {key}: {value}')
+            setattr(args, key, value)
 
     print(args)
     if args.init_bert_lr is None and args.init_bart_lr is None:
